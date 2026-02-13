@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentín</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0; padding: 0;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; background-color: #fff0f3;
+            font-family: 'Playfair Display', serif;
+            overflow: hidden;
+        }
+
+        .seccion {
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            width: 100%; height: 100%;
+        }
+
+        .activa { display: flex; animation: fadeIn 1s forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- TEXTO VOLUMINOSO --- */
+        .texto-3d {
+            font-family: 'Dancing Script', cursive;
+            color: #ff5c8a;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 
+                3px 3px 0px #d81b60, 
+                5px 5px 0px rgba(0,0,0,0.1),
+                0px 0px 15px rgba(255, 92, 138, 0.4);
+        }
+
+        /* --- BOTONES --- */
+        .boton-rosado {
+            padding: 18px 45px; background-color: #ff85a1;
+            color: white; border-radius: 50px; border: none;
+            font-weight: bold; font-size: 1.1rem; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255,133,161,0.3);
+            transition: 0.3s; font-family: sans-serif;
+            margin: 20px 0;
+        }
+
+        /* --- PANTALLA 1: CORAZÓN CON NOMBRE --- */
+        .heart-wrapper { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
+        .corazon-svg {
+            width: 220px; fill: #ff0000;
+            animation: latido 1.2s infinite ease-in-out;
+            filter: drop-shadow(0 10px 15px rgba(220, 20, 60, 0.4));
+        }
+        .nombre-centro {
+            position: absolute; color: white; font-family: sans-serif;
+            font-weight: bold; font-size: 1.3rem; text-align: center;
+            z-index: 10; pointer-events: none; top: 45%; transform: translateY(-50%);
+        }
+        @keyframes latido {
+            0%, 30%, 60%, 100% { transform: scale(1); }
+            15% { transform: scale(1.1); }
+            45% { transform: scale(1.05); }
+        }
+
+        /* --- BURBUJAS --- */
+        .mini-corazon {
+            position: absolute; fill: #ff4d6d; pointer-events: none;
+            top: 50%; left: 50%; animation: disparoParticula 2s ease-out forwards;
+        }
+        @keyframes disparoParticula {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(1.2) rotate(var(--r)); opacity: 0; }
+        }
+
+        /* --- PANTALLA 2: PERGAMINO --- */
+        .pergamino-container {
+            position: relative; width: 90%; max-width: 500px; height: 75vh; 
+            display: flex; flex-direction: column;
+        }
+        .madera {
+            width: 106%; height: 35px;
+            background: linear-gradient(to bottom, #5d4037, #8d6e63, #3e2723);
+            border-radius: 10px; position: absolute; left: -3%; z-index: 5;
+        }
+        .superior { top: -10px; } .inferior { bottom: -10px; }
+        .pergamino-cuerpo {
+            background: #e9d5a3;
+            background-image: linear-gradient(to right, #b89b6c 0%, #e9d5a3 15%, #e9d5a3 85%, #b89b6c 100%);
+            flex: 1; margin: 5px 0; padding: 50px 25px;
+            overflow-y: auto; overflow-x: hidden; scrollbar-width: none;
+            border-radius: 5px; color: #4a2c1a; text-align: center;
+        }
+        .pergamino-cuerpo::-webkit-scrollbar { display: none; }
+        .contenido-texto { font-family: 'Dancing Script', cursive; font-size: 1.8rem; line-height: 1.8; }
+
+        /* --- PANTALLA 3: GALERÍA --- */
+        .grid-fotos {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 20px; width: 95%; max-width: 480px;
+        }
+        .foto-marco {
+            width: 100%; aspect-ratio: 1 / 1; 
+            background: #fff; border: 8px solid #ff5c8a; 
+            transform: skew(-4deg); box-shadow: 10px 10px 20px rgba(0,0,0,0.15);
+            overflow: hidden; opacity: 0;
+        }
+        .foto-marco img {
+            width: 150%; height: 100%; object-fit: cover;
+            transform: skew(4deg) translateX(-15%);
+        }
+        @keyframes entrarCuadro {
+            from { opacity: 0; transform: skew(-4deg) translateY(50px); }
+            to { opacity: 1; transform: skew(-4deg) translateY(0); }
+        }
+        .animar-cuadro { animation: entrarCuadro 0.7s ease-out forwards; }
+
+        /* --- PANTALLA 4: FINAL CON LLUVIA --- */
+        .contenedor-lluvia { position: absolute; width: 100%; height: 100%; top:0; left:0; pointer-events: none; }
+        .corazon-flotante {
+            position: absolute; bottom: -50px; fill: #ffb3c1;
+            animation: flotar var(--d) linear infinite;
+        }
+        @keyframes flotar {
+            from { transform: translateY(0); left: var(--l); opacity: 0.8; }
+            to { transform: translateY(-115vh); left: var(--l); opacity: 0; }
+        }
+
+        #musica { display: none; }
+    </style>
+</head>
+<body>
+
+    <audio id="musica" loop preload="auto">
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="pantalla1" class="seccion activa">
+        <div class="heart-wrapper" id="emisor">
+            <svg class="corazon-svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <div class="nombre-centro">Nikol</div>
+        </div>
+        <button class="boton-rosado" onclick="irA(1, 2)">Tengo algo para ti</button>
+    </div>
+
+    <div id="pantalla2" class="seccion">
+        <div class="pergamino-container">
+            <div class="madera superior"></div>
+            <div class="pergamino-cuerpo">
+                <div class="contenido-texto">
+                    <p>Querida Niko:</p>
+                    <p>Gracias por tu linda amistad, agradezco cada una de las cosas que hiciste por mí eres muy amable y buena persona. <br><br> Te deseo muchos éxitos este año y que puedas cumplir todas tus metas y si no puedo hacer nada más que enviarte esto de manera anónima es porque lo intenté pero tú no querías y pues está bien. Eres una chica muy linda, espero que recibas tus flores porque te lo mereces. <b>Eres muy inteligente y en verdad espero puedas terminar tu carrera y ser una gran profesional. Te envío esto un 13 de febrero para no malograr tu 14.</b> <b>Y recuerda contar conmigo siempre, te ganaste a alguien que siempre estará para ti porque al final yo siempre estoy para ti.</b> <b>:)</b>
+                </p>
+                    <p>💖</p>
+                    <button class="boton-rosado" onclick="irA(2, 3)">Ver nuestras fotos</button>
+                </div>
+            </div>
+            <div class="madera inferior"></div>
+        </div>
+    </div>
+
+    <div id="pantalla3" class="seccion">
+        <h2 class="texto-3d" style="font-size: 3rem; margin-bottom: 30px;">Nuestros Momentos</h2>
+        <p>NO HAY MOMENTOS Tú NO QUISISTE</p> <b>:(</b> <b>:(</b>
+        <div class="grid-fotos">
+            <div class="foto-marco"><img src="FOTO.jpg"></div>
+            <div class="foto-marco"><img src="FOTO2.jpg"></div>
+            <div class="foto-marco"><img src="FOTO3.jpg"></div>
+            <div class="foto-marco"><img src="FOTO4.jpg"></div>
+        </div>
+        <button class="boton-rosado" onclick="irA(3, 4)">Siguiente</button>
+    </div>
+
+    <div id="pantalla4" class="seccion">
+        <div id="lluvia" class="contenedor-lluvia"></div>
+        <h1 class="texto-3d" style="font-size: 4rem; margin: 0;">FELIZ DÍA DE SAN VALENTÍN</h1>
+        <p class="texto-3d" style="font-size: 2rem; margin-top: 15px;">MI Niko</p>
+        <button class="boton-rosado" onclick="reiniciar()">Volver al inicio</button>
+    </div>
+
+    <script>
+        const musica = document.getElementById('musica');
+
+        function irA(act, sig) {
+            // Activa la música al primer clic del usuario
+            if(act === 1) {
+                musica.play().catch(e => console.log("Carga tu archivo musica.mp3 para escucharla"));
+            }
+            document.getElementById(`pantalla${act}`).classList.remove('activa');
+            document.getElementById(`pantalla${sig}`).classList.add('activa');
+            
+            if(sig === 3) {
+                document.querySelectorAll('.foto-marco').forEach((f, i) => setTimeout(() => f.classList.add('animar-cuadro'), i * 250));
+            }
+            if(sig === 4) generarLluvia();
+        }
+
+        function reiniciar() {
+            document.getElementById('lluvia').innerHTML = '';
+            document.querySelectorAll('.foto-marco').forEach(f => f.classList.remove('animar-cuadro'));
+            document.getElementById('pantalla4').classList.remove('activa');
+            document.getElementById('pantalla1').classList.add('activa');
+        }
+
+        // BURBUJAS P1
+        setInterval(() => {
+            if(!document.getElementById('pantalla1').classList.contains('activa')) return;
+            for(let i=0; i<8; i++) {
+                const b = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                b.setAttribute("viewBox", "0 0 24 24"); b.classList.add("mini-corazon");
+                const ang = Math.random() * Math.PI * 2; const dist = Math.random() * 200 + 150;
+                b.style.setProperty('--x', `${Math.cos(ang) * dist}px`);
+                b.style.setProperty('--y', `${Math.sin(ang) * dist}px`);
+                b.style.setProperty('--r', `${Math.random() * 360}deg`);
+                b.style.width = "15px";
+                b.innerHTML = `<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>`;
+                document.getElementById('emisor').appendChild(b);
+                setTimeout(() => b.remove(), 2000);
+            }
+        }, 1200);
+
+        function generarLluvia() {
+            const ll = document.getElementById('lluvia');
+            for(let i=0; i<40; i++) {
+                const c = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                c.setAttribute("viewBox", "0 0 24 24"); c.classList.add("corazon-flotante");
+                c.style.setProperty('--l', `${Math.random()*100}vw`);
+                c.style.setProperty('--d', `${Math.random()*3+3}s`);
+                c.style.width = `${Math.random()*15+15}px`;
+                c.style.animationDelay = `${Math.random()*5}s`;
+                c.innerHTML = `<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>`;
+                ll.appendChild(c);
+            }
+        }
+    </script>
+</body>
+</html>
