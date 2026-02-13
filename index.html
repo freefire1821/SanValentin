@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>San Valentín</title>
+    <meta property="og:title" content="San Valentín - Para Niko">
+    <meta property="og:description" content="Tengo algo especial para ti... Haz clic para verlo. 💖">
+    <meta property="og:image" content="http://googleusercontent.com/image_collection/image_retrieval/6038574212799720358_2">
+    <meta property="og:url" content="https://freefire1821.github.io/SanValentin/">
+    <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
     <style>
         body {
@@ -24,7 +31,6 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- TEXTO VOLUMINOSO --- */
         .texto-3d {
             font-family: 'Dancing Script', cursive;
             color: #ff5c8a;
@@ -36,7 +42,6 @@
                 0px 0px 15px rgba(255, 92, 138, 0.4);
         }
 
-        /* --- BOTONES --- */
         .boton-rosado {
             padding: 18px 45px; background-color: #ff85a1;
             color: white; border-radius: 50px; border: none;
@@ -46,7 +51,6 @@
             margin: 20px 0;
         }
 
-        /* --- PANTALLA 1: CORAZÓN CON NOMBRE --- */
         .heart-wrapper { position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
         .corazon-svg {
             width: 220px; fill: #ff0000;
@@ -64,7 +68,6 @@
             45% { transform: scale(1.05); }
         }
 
-        /* --- BURBUJAS --- */
         .mini-corazon {
             position: absolute; fill: #ff4d6d; pointer-events: none;
             top: 50%; left: 50%; animation: disparoParticula 2s ease-out forwards;
@@ -74,7 +77,6 @@
             100% { transform: translate(var(--x), var(--y)) scale(1.2) rotate(var(--r)); opacity: 0; }
         }
 
-        /* --- PANTALLA 2: PERGAMINO --- */
         .pergamino-container {
             position: relative; width: 90%; max-width: 500px; height: 75vh; 
             display: flex; flex-direction: column;
@@ -95,7 +97,6 @@
         .pergamino-cuerpo::-webkit-scrollbar { display: none; }
         .contenido-texto { font-family: 'Dancing Script', cursive; font-size: 1.8rem; line-height: 1.8; }
 
-        /* --- PANTALLA 3: GALERÍA --- */
         .grid-fotos {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 20px; width: 95%; max-width: 480px;
@@ -116,7 +117,6 @@
         }
         .animar-cuadro { animation: entrarCuadro 0.7s ease-out forwards; }
 
-        /* --- PANTALLA 4: FINAL CON LLUVIA --- */
         .contenedor-lluvia { position: absolute; width: 100%; height: 100%; top:0; left:0; pointer-events: none; }
         .corazon-flotante {
             position: absolute; bottom: -50px; fill: #ffb3c1;
@@ -183,9 +183,8 @@
         const musica = document.getElementById('musica');
 
         function irA(act, sig) {
-            // Activa la música al primer clic del usuario
             if(act === 1) {
-                musica.play().catch(e => console.log("Carga tu archivo musica.mp3 para escucharla"));
+                musica.play().catch(e => console.log("Carga tu archivo musica.mp3"));
             }
             document.getElementById(`pantalla${act}`).classList.remove('activa');
             document.getElementById(`pantalla${sig}`).classList.add('activa');
@@ -203,7 +202,6 @@
             document.getElementById('pantalla1').classList.add('activa');
         }
 
-        // BURBUJAS P1
         setInterval(() => {
             if(!document.getElementById('pantalla1').classList.contains('activa')) return;
             for(let i=0; i<8; i++) {
